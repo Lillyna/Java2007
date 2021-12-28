@@ -11,7 +11,7 @@ public class BasicConstructions {
         //check task4
         printStr("Some solid message",5);
         //check task5
-        System.out.println(isLeapYear(400));
+        System.out.println(isLeapYear(2020));
     }
 
     //task1
@@ -39,7 +39,9 @@ public class BasicConstructions {
 
     //task5
     public static boolean isLeapYear(int year){
-        if(year%4==0&&year%100!=0&&year%400==0) return true;
-        else return false;
+        boolean res = false;
+        if(year%400==0) res = true;
+        else if (year%4==0&&year%100!=0) res = true;
+        return res;
     }
 }
