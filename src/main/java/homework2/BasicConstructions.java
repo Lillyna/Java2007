@@ -1,4 +1,4 @@
-package course1.homework2;
+package homework2;
 
 public class BasicConstructions {
     public static void main(String[] args) {
