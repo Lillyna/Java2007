@@ -72,60 +72,61 @@ public class CrossesZeroesApp {
     /**
      * Ход компьютера
      */
-    public static void aiTurn(){
+    public static void aiTurn() {
         int[] coords = blockTurn();
-        System.out.println("Робот делает ход в " + (coords[0] + 1) + " " + (coords[1] +1));
-        map[coords[1]][coords[0]] = DOT_O;
+        int x = coords[0];
+        int y = coords[1];
+        System.out.println("Робот делает ход в " + (x + 1) + " " + (y + 1));
+        map[y][x] = DOT_O;
     }
 
     /**
-     * Блокирует ход игрока (определяет наиболее выгодные координаты, чтобы предотвратить выигрыш соперника)
+     * Блокирует ход игрока (находит последовательность X длиной DOTS_TO_WIN-1 и ставит O
+     * в начало или в конец последовательности (если это возможно)). Проверяются сначала строки, потом столбцы,
+     * потом главная диагональ, потом неглавная, то есть если блокировать нужно в и строке и в главной диагонали,
+     * то в текущем ходе будет поставлен O в строке. Ситуация, когда в строке (или в столбце или в диагонали)
+     * не хватает одного X в середине, не обрабатывается:(
+     * Если координаты для блокировки не найдены, возвращаются случайные координаты.
+     *
      * @return координаты хода компьютера
      */
-    public static int[] blockTurn(){
+    public static int[] blockTurn() {
         int[] coords = new int[2];
-        char[] arr = new char[DOTS_TO_WIN-1];
-        Arrays.fill(arr,DOT_X);
+        char[] arr = new char[DOTS_TO_WIN - 1];
+        Arrays.fill(arr, DOT_X);
         String sequenceOfX = String.valueOf(arr);
-        System.out.println("Последовательность"+sequenceOfX);
+
         //проверка по строкам
         for (int i = 0; i < map.length; i++) {
             String row = String.valueOf(map[i]);
             int startSequenceIndex = row.indexOf(sequenceOfX);
-            System.out.println("Первый индекс"+row.indexOf(sequenceOfX));
-            int endSequenceIndex = startSequenceIndex+DOTS_TO_WIN-1;
-            if(startSequenceIndex>=0){
-                System.out.println("Проверка по строкам");
-                if (isCellValid(i+1, startSequenceIndex-1+1)){
-                    System.out.println("Проверка по строкам"+(startSequenceIndex-1)+"ээ"+i);
-                coords[0] = startSequenceIndex-1;
-                coords[1] = i;
-                return coords;
-                }
-                else if (isCellValid(i+1, endSequenceIndex+1+1)){
-                    System.out.println("Проверка по строкам2"+(endSequenceIndex+1)+"ээ"+i);
-                    coords[0] = endSequenceIndex+1;
+            int endSequenceIndex = startSequenceIndex + DOTS_TO_WIN - 2;
+            if (startSequenceIndex >= 0) {
+                if (isCellValid(startSequenceIndex - 1, i)) {
+                    coords[0] = startSequenceIndex - 1;
+                    coords[1] = i;
+                    return coords;
+                } else if (isCellValid(endSequenceIndex + 1, i)) {
+                    coords[0] = endSequenceIndex + 1;
                     coords[1] = i;
                     return coords;
                 }
             }
         }
+
         //проверка по столбцам
         char[][] mapTransposed = swap(map);
         for (int i = 0; i < mapTransposed.length; i++) {
             String row = String.valueOf(mapTransposed[i]);
             int startSequenceIndex = row.indexOf(sequenceOfX);
-            System.out.println("Первый индекс стлб"+row.indexOf(sequenceOfX));
-            int endSequenceIndex = startSequenceIndex+DOTS_TO_WIN-1;
-            if(startSequenceIndex>=0){
-                if (isCellValid(startSequenceIndex-1,i)){
-                    System.out.println("Проверка по столбцам"+(startSequenceIndex-1)+i);
-                    coords[1] = startSequenceIndex-1;
+            int endSequenceIndex = startSequenceIndex + DOTS_TO_WIN - 2;
+            if (startSequenceIndex >= 0) {
+                if (isCellValid(startSequenceIndex - 1, i)) {
+                    coords[1] = startSequenceIndex - 1;
                     coords[0] = i;
                     return coords;
-                }
-                else if (isCellValid(endSequenceIndex+1,i)){
-                    coords[1] = endSequenceIndex+1;
+                } else if (isCellValid(endSequenceIndex + 1, i)) {
+                    coords[1] = endSequenceIndex + 1;
                     coords[0] = i;
                     return coords;
                 }
@@ -135,22 +136,21 @@ public class CrossesZeroesApp {
         //проверка по главной диагонали
         char[] diagMain = new char[SIZE];
         for (int i = 0; i < map.length; i++) {
-            for (int j = 0; j <map[i].length; j++) {
-                if(i==j){
-                    diagMain[i]=map[i][j];
+            for (int j = 0; j < map[i].length; j++) {
+                if (i == j) {
+                    diagMain[i] = map[i][j];
                 }
             }
         }
         System.out.println(Arrays.toString(diagMain));
         int startSequenceIndex = String.valueOf(diagMain).indexOf(sequenceOfX);
-        int endSequenceIndex = startSequenceIndex + DOTS_TO_WIN -1;
-        if(startSequenceIndex>=0){
-            if(isCellValid(startSequenceIndex-1,startSequenceIndex-1)) {
+        int endSequenceIndex = startSequenceIndex + DOTS_TO_WIN - 2;
+        if (startSequenceIndex >= 0) {
+            if (isCellValid(startSequenceIndex - 1, startSequenceIndex - 1)) {
                 coords[0] = coords[1] = startSequenceIndex - 1;
                 System.out.println(Arrays.toString(coords));
                 return coords;
-            }
-            else if (isCellValid(endSequenceIndex+1,endSequenceIndex+1)) {
+            } else if (isCellValid(endSequenceIndex + 1, endSequenceIndex + 1)) {
                 coords[0] = coords[1] = endSequenceIndex + 1;
                 System.out.println(Arrays.toString(coords));
                 return coords;
@@ -161,34 +161,33 @@ public class CrossesZeroesApp {
         char[] diagSecond = new char[SIZE];
         int k = 0;
         for (int i = 0; i < map.length; i++) {
-            for (int j = 0; j <map[i].length; j++) {
-                if(map[i].length - i == j + 1){
+            for (int j = 0; j < map[i].length; j++) {
+                if (map[i].length - i == j + 1) {
                     diagSecond[k] = map[i][j];
                     k++;
                 }
             }
         }
         startSequenceIndex = String.valueOf(diagSecond).indexOf(sequenceOfX);
-        endSequenceIndex = startSequenceIndex + DOTS_TO_WIN -1;
-        if(startSequenceIndex>=0){
-            if(isCellValid(startSequenceIndex-1,SIZE - startSequenceIndex+1)) {
-                coords[0] = startSequenceIndex - 1;
-                coords[1] = SIZE - startSequenceIndex+1;
+        endSequenceIndex = startSequenceIndex + DOTS_TO_WIN - 2;
+        if (startSequenceIndex >= 0) {
+            if (isCellValid(SIZE - startSequenceIndex + 1, startSequenceIndex - 1)) {
+                coords[1] = startSequenceIndex - 1;
+                coords[0] = SIZE - startSequenceIndex + 1;
                 System.out.println(Arrays.toString(coords));
                 return coords;
-            }
-            else if (isCellValid(endSequenceIndex+1,SIZE - endSequenceIndex-2)) {
-                coords[0] = endSequenceIndex + 1;
-                coords[1] = SIZE - endSequenceIndex-2;
+            } else if (isCellValid(SIZE - endSequenceIndex - 2, endSequenceIndex + 1)) {
+                coords[1] = endSequenceIndex + 1;
+                coords[0] = SIZE - endSequenceIndex - 2;
                 System.out.println(Arrays.toString(coords));
                 return coords;
             }
         }
         //если нечего пока блокировать, делаем случайный ход
-        do{
+        do {
             coords[0] = RANDOM.nextInt(SIZE);
             coords[1] = RANDOM.nextInt(SIZE);
-        } while (!isCellValid(coords[0],coords[1]));
+        } while (!isCellValid(coords[0], coords[1]));
         return coords;
     }
 
@@ -203,7 +202,7 @@ public class CrossesZeroesApp {
         if (x < 0 || x >= SIZE || y < 0 || y >= SIZE) {
             return false;
         }
-        if (map[y][x]!=DOT_EMPTY){
+        if (map[y][x] != DOT_EMPTY) {
             return false;
         }
         return true;
@@ -211,12 +210,13 @@ public class CrossesZeroesApp {
 
     /**
      * Проверка, что в поле не осталось ни одной свободной ячейки
+     *
      * @return true, если нет ни одной свободной
      */
-    public static boolean isMapFull(){
+    public static boolean isMapFull() {
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map[i].length; j++) {
-                if(map[i][j] == DOT_EMPTY){
+                if (map[i][j] == DOT_EMPTY) {
                     return false;
                 }
             }
@@ -226,17 +226,18 @@ public class CrossesZeroesApp {
 
     /**
      * Проверка победы
+     *
      * @param symbol Крестик или нолик
      * @return true, если выиграл
      */
-    public static boolean checkWin(char symbol){
+    public static boolean checkWin(char symbol) {
         char[] arr = new char[DOTS_TO_WIN];
-        Arrays.fill(arr,symbol);
+        Arrays.fill(arr, symbol);
         String winCombo = String.valueOf(arr);
         //строки
         for (int i = 0; i < map.length; i++) {
             String row = String.valueOf(map[i]);
-            if(row.contains(winCombo)){
+            if (row.contains(winCombo)) {
                 return true;
             }
         }
@@ -245,7 +246,7 @@ public class CrossesZeroesApp {
         char[][] mapTransposed = swap(map);
         for (int i = 0; i < mapTransposed.length; i++) {
             String row = String.valueOf(mapTransposed[i]);
-            if(row.contains(winCombo)){
+            if (row.contains(winCombo)) {
                 return true;
             }
         }
@@ -253,13 +254,13 @@ public class CrossesZeroesApp {
         //главная диагональ
         char[] diagMain = new char[SIZE];
         for (int i = 0; i < map.length; i++) {
-            for (int j = 0; j <map[i].length; j++) {
-                if(i==j){
-                    diagMain[i]=map[i][j];
+            for (int j = 0; j < map[i].length; j++) {
+                if (i == j) {
+                    diagMain[i] = map[i][j];
                 }
             }
         }
-        if(String.valueOf(diagMain).contains(winCombo)){
+        if (String.valueOf(diagMain).contains(winCombo)) {
             return true;
         }
 
@@ -267,14 +268,14 @@ public class CrossesZeroesApp {
         char[] diagSecond = new char[SIZE];
         int k = 0;
         for (int i = 0; i < map.length; i++) {
-            for (int j = 0; j <map[i].length; j++) {
-                if(map[i].length - i == j + 1){
+            for (int j = 0; j < map[i].length; j++) {
+                if (map[i].length - i == j + 1) {
                     diagSecond[k] = map[i][j];
                     k++;
                 }
             }
         }
-        if(String.valueOf(diagSecond).contains(winCombo)){
+        if (String.valueOf(diagSecond).contains(winCombo)) {
             return true;
         }
         return false;
@@ -282,18 +283,18 @@ public class CrossesZeroesApp {
 
     /**
      * Траспонирует матрицу
+     *
      * @param map входная матрица
      * @return траспонированная матрица
      */
-    public static char[][] swap (char[][] map){
+    public static char[][] swap(char[][] map) {
         char[][] mapTransposed = new char[SIZE][SIZE];
-        for(int i=0;i<map.length;i++) {
+        for (int i = 0; i < map.length; i++) {
             for (int j = i; j < map[i].length; j++) {
                 if (i != j) {
                     mapTransposed[i][j] = map[j][i];
                     mapTransposed[j][i] = map[i][j];
-                }
-                else {
+                } else {
                     mapTransposed[i][j] = map[i][j];
                 }
             }
@@ -304,24 +305,24 @@ public class CrossesZeroesApp {
     public static void main(String[] args) {
         initMap();
         printMap();
-        while(true){
+        while (true) {
             humanTurn();
             printMap();
-            if(checkWin(DOT_X)){
+            if (checkWin(DOT_X)) {
                 System.out.println("Побеждает человек");
                 break;
             }
-            if(isMapFull()){
+            if (isMapFull()) {
                 System.out.println("Ничья!");
                 break;
             }
             aiTurn();
             printMap();
-            if(checkWin(DOT_O)){
+            if (checkWin(DOT_O)) {
                 System.out.println("Побеждает ai");
                 break;
             }
-            if(isMapFull()){
+            if (isMapFull()) {
                 System.out.println("Ничья!");
                 break;
             }
