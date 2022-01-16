@@ -96,13 +96,14 @@ public class CrossesZeroesApp {
             int endSequenceIndex = startSequenceIndex+DOTS_TO_WIN-1;
             if(startSequenceIndex>=0){
                 System.out.println("Проверка по строкам");
-                if (isCellValid(startSequenceIndex-1,i)){
-                    System.out.println("Проверка по строкам"+(startSequenceIndex-1)+i);
+                if (isCellValid(i+1, startSequenceIndex-1+1)){
+                    System.out.println("Проверка по строкам"+(startSequenceIndex-1)+"ээ"+i);
                 coords[0] = startSequenceIndex-1;
                 coords[1] = i;
                 return coords;
                 }
-                else if (isCellValid(endSequenceIndex+1,i)){
+                else if (isCellValid(i+1, endSequenceIndex+1+1)){
+                    System.out.println("Проверка по строкам2"+(endSequenceIndex+1)+"ээ"+i);
                     coords[0] = endSequenceIndex+1;
                     coords[1] = i;
                     return coords;
@@ -114,9 +115,11 @@ public class CrossesZeroesApp {
         for (int i = 0; i < mapTransposed.length; i++) {
             String row = String.valueOf(mapTransposed[i]);
             int startSequenceIndex = row.indexOf(sequenceOfX);
+            System.out.println("Первый индекс стлб"+row.indexOf(sequenceOfX));
             int endSequenceIndex = startSequenceIndex+DOTS_TO_WIN-1;
             if(startSequenceIndex>=0){
                 if (isCellValid(startSequenceIndex-1,i)){
+                    System.out.println("Проверка по столбцам"+(startSequenceIndex-1)+i);
                     coords[1] = startSequenceIndex-1;
                     coords[0] = i;
                     return coords;
