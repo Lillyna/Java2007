@@ -1,4 +1,4 @@
-package homework1;
+package course2.homework1;
 
 public class HomeWorkApp {
     public static void main(String[] args) {
