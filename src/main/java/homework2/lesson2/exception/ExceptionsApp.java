@@ -1,4 +1,4 @@
-package course2.lesson2.exception;
+package homework2.lesson2.exception;
 
 public class ExceptionsApp {
     public static void main(String[] args) {

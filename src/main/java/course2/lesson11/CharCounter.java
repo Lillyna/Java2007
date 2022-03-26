@@ -4,9 +4,11 @@ public class CharCounter {
 
     public static void main(String[] args) {
 
-        final Reader reader = new DummyReader();
         final CharCounter counter = new CharCounter();
         counter.count("aaabbbSSSS");
+        // анонимный класс
+        // лямбда-выражение - это "синтаксический сахар" - синтаксическая обертка для записи анонимных классов
+        final Reader reader = (a, b) -> a.repeat(b);
 
 
     }

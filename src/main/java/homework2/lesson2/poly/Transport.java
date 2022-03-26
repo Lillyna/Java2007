@@ -1,4 +1,4 @@
-package course2.lesson2.poly;
+package homework2.lesson2.poly;
 
 public abstract class Transport {
     int capacity;
