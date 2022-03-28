@@ -42,7 +42,7 @@ public class MyArrayApp {
                 try {
                     sum += Integer.parseInt(myArray[i][j]);
                 } catch (NumberFormatException de) {
-                    throw new MyArrayDataException(format("[%s][%s]", i + 1, j + 1));
+                    throw new MyArrayDataException(i,j);
                 }
             }
         }
