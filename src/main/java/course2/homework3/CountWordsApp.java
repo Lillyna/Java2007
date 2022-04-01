@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 
@@ -36,13 +38,21 @@ public class CountWordsApp {
      */
     private static void countWords(ArrayList<String> words) {
         HashMap<String, Integer> uniqueWordsCount = new HashMap<>();
+//        uniqueWordsCount = words.stream()
+//                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
         for (String word : words) {
-            Integer count = uniqueWordsCount.get(word);
-            if (count == null) {
-                count = 0;
-            }
-            count++;
-            uniqueWordsCount.put(word, count);
+
+            uniqueWordsCount.merge(word, 1, (a,b) -> a+b); // в одну строчку
+
+//            int value = uniqueWordsCount.getOrDefault(word,0) + 1; //в две строчки
+//            uniqueWordsCount.put(word,value);
+
+//            Integer count = uniqueWordsCount.get(word);
+//            if (count == null) {
+//                count = 0;
+//            }
+//            count++;
+//            uniqueWordsCount.put(word, count);
         }
 
         for (String str : uniqueWordsCount.keySet()) {
