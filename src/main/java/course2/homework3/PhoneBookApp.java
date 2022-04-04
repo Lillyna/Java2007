@@ -12,7 +12,7 @@ public class PhoneBookApp {
         phoneBook.addEntry("910-123-23-46", "Смирнов");
 
         System.out.printf("Тел: 910-123-23-46 - имя: %s%n",phoneBook.getByPhone("910-123-23-46"));
-        System.out.printf("Имя: Иванов - тел: %s%n",phoneBook.getByName("Ивановa"));
+        System.out.printf("Имя: Иванов - тел: %s%n",phoneBook.getByName("Петров"));
 
 
 

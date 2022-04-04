@@ -14,21 +14,17 @@ public class PhoneBook {
     }
 
     public String getByPhone(String phoneNumber) {
-        Optional<String> name = map.entrySet()
-                .stream()
-                .filter(e -> e.getKey().equals(phoneNumber))
-                .map(Map.Entry::getValue)
-                .findFirst();
-        return name.isEmpty() ? "Ничего не найдено" : name.get();
+        String name = map.get(phoneNumber);
+        return name.isEmpty() ? "Ничего не найдено" : name;
     }
 
     public ArrayList<String> getByName(String surname) {
 
         ArrayList<String> phones = new ArrayList<>();
 
-        for (String i : map.keySet()) {
-            if (map.get(i).equals(surname)) {
-                phones.add(i);
+        for (Map.Entry<String, String> i : map.entrySet()) {
+            if (i.getValue().equals(surname)) {
+                phones.add(i.getKey());
             }
         }
         if (phones.size() == 0) {
