@@ -56,6 +56,7 @@ public class EchoClient {
                 e.printStackTrace();
             }
         }
+        System.exit(0);
     }
 
     private void openConnection() throws IOException {
@@ -69,6 +70,7 @@ public class EchoClient {
                     while (true) {
                         String s = in.readUTF(); // блокирующий метод
                         if ("/end".equalsIgnoreCase(s)) {
+                            out.writeUTF(s);
                             break;
                         }
                         System.out.println("Сообщение от сервера " + s);
