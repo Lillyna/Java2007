@@ -7,13 +7,12 @@ import java.util.*;
 
 public class App {
     //Анонимный класс
- //   TreeSet<Cat> cats = new TreeSet<course1.lesson9.Cat>((o1, o2) -> {
-//        if(o1.getName().equals(o2.getName)){
-//            return o1.getAge() - o2.getAge();
-//        }
-//        return o1.getName().compareTo(o2.getName());
-//    });
-//
+
+//    TreeSet<Cat> cats = new TreeSet<course1.lesson9.Cat>((o1, o2) -> {
+
+
+
+
     public static void main(String[] args) {
         List<Integer> i = Arrays.asList(1,2,3,4,4,5,6,6);
         int s = 0;
